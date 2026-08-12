@@ -169,6 +169,8 @@ function removeHistory(id) {
 }
 
 async function pasteFromClipboard() {
+  input.focus({ preventScroll: true });
+  input.setSelectionRange(0, input.value.length);
   try {
     const text = await navigator.clipboard.readText();
     if (!text.trim()) {
@@ -176,12 +178,12 @@ async function pasteFromClipboard() {
       return;
     }
     input.value = text.trim();
-    input.focus({ preventScroll: true });
     input.setSelectionRange(input.value.length, input.value.length);
     showToast("貼り付けました");
   } catch {
-    input.focus();
-    showToast("入力欄を長押しして貼り付けてください");
+    input.focus({ preventScroll: true });
+    input.setSelectionRange(0, input.value.length);
+    showToast("表示された「ペースト」を押してください");
   }
 }
 

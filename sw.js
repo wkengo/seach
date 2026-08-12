@@ -1,4 +1,4 @@
-const CACHE_NAME = "search-palette-v6";
+const CACHE_NAME = "search-palette-v7";
 const ASSETS = ["./", "./index.html", "./google-search.html", "./styles.css", "./app.js", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", (event) => {
