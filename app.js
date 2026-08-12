@@ -3,6 +3,7 @@ const STATION_KEY = "searchPalette.homeStation.v1";
 
 const services = {
   google: { label: "Google", buildUrl: (q) => `./google-search.html?q=${encodeURIComponent(q)}` },
+  tabelog: { label: "食べログ", buildUrl: (q) => `https://tabelog.com/rstLst/?vs=1&sk=${encodeURIComponent(q)}` },
   maps: { label: "Googleマップ", buildUrl: (q) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` },
   youtube: { label: "YouTube", buildUrl: (q) => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}` },
   rakuten: { label: "楽天レシピ", buildUrl: (q) => `https://recipe.rakuten.co.jp/search/${encodeURIComponent(q)}/` },
@@ -168,25 +169,6 @@ function removeHistory(id) {
   renderHistory();
 }
 
-async function pasteFromClipboard() {
-  input.focus({ preventScroll: true });
-  input.setSelectionRange(0, input.value.length);
-  try {
-    const text = await navigator.clipboard.readText();
-    if (!text.trim()) {
-      showToast("クリップボードは空です");
-      return;
-    }
-    input.value = text.trim();
-    input.setSelectionRange(input.value.length, input.value.length);
-    showToast("貼り付けました");
-  } catch {
-    input.focus({ preventScroll: true });
-    input.setSelectionRange(0, input.value.length);
-    showToast("表示された「ペースト」を押してください");
-  }
-}
-
 function openStationDialog(selectYahooAfterSave = false, pendingQuery = "") {
   stationDialog.dataset.selectYahooAfterSave = String(selectYahooAfterSave);
   stationDialog.dataset.pendingQuery = pendingQuery;
@@ -203,7 +185,6 @@ form.addEventListener("submit", (event) => {
 document.querySelector("#serviceStrip").addEventListener("click", (event) => {
   const button = event.target.closest("button");
   if (!button) return;
-  if (button.dataset.action === "paste") pasteFromClipboard();
   if (button.dataset.service) {
     const service = button.dataset.service;
     if (service === "yahooTransit" && !state.homeStation) {
