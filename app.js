@@ -32,6 +32,7 @@ const inputClearButton = document.querySelector("#inputClearButton");
 const form = document.querySelector("#searchForm");
 const historyList = document.querySelector("#historyList");
 const selectedServiceText = document.querySelector("#selectedService");
+const searchPanel = document.querySelector(".search-panel");
 const helpDialog = document.querySelector("#helpDialog");
 const stationDialog = document.querySelector("#stationDialog");
 const stationForm = document.querySelector("#stationForm");
@@ -113,6 +114,24 @@ function showToast(message) {
 
 function updateInputClearButton() {
   inputClearButton.hidden = input.value.length === 0;
+}
+
+function positionPanelAboveKeyboard() {
+  if (document.activeElement !== input || !window.visualViewport) return;
+  const viewport = window.visualViewport;
+  const keyboardIsVisible = viewport.height < window.innerHeight * 0.85;
+  if (!keyboardIsVisible) {
+    searchPanel.classList.remove("is-keyboard-visible");
+    searchPanel.style.top = "";
+    return;
+  }
+  searchPanel.classList.add("is-keyboard-visible");
+  searchPanel.style.top = `${window.scrollY + viewport.offsetTop + viewport.height}px`;
+}
+
+function restorePanelPosition() {
+  searchPanel.classList.remove("is-keyboard-visible");
+  searchPanel.style.top = "";
 }
 
 function formatDate(timestamp) {
@@ -249,11 +268,22 @@ form.addEventListener("submit", (event) => {
 });
 
 input.addEventListener("input", updateInputClearButton);
+input.addEventListener("focus", () => {
+  setTimeout(positionPanelAboveKeyboard, 100);
+  setTimeout(positionPanelAboveKeyboard, 350);
+});
+input.addEventListener("blur", () => setTimeout(() => {
+  if (document.activeElement !== input) restorePanelPosition();
+}, 100));
 inputClearButton.addEventListener("click", () => {
   input.value = "";
   updateInputClearButton();
   input.focus({ preventScroll: true });
 });
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", positionPanelAboveKeyboard);
+  window.visualViewport.addEventListener("scroll", positionPanelAboveKeyboard);
+}
 
 serviceStrip.addEventListener("click", (event) => {
   const button = event.target.closest("button");
