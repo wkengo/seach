@@ -2,7 +2,7 @@ const STORAGE_KEY = "searchPalette.history.v1";
 const STATION_KEY = "searchPalette.homeStation.v1";
 
 const services = {
-  google: { label: "Google", buildUrl: (q) => `https://www.google.com/search?q=${encodeURIComponent(q)}` },
+  google: { label: "Google", buildUrl: (q) => `./google-search.html?q=${encodeURIComponent(q)}` },
   maps: { label: "Googleマップ", buildUrl: (q) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` },
   youtube: { label: "YouTube", buildUrl: (q) => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}` },
   rakuten: { label: "楽天レシピ", buildUrl: (q) => `https://recipe.rakuten.co.jp/search/${encodeURIComponent(q)}/` },
@@ -22,7 +22,6 @@ const state = { selectedService: "google", history: loadHistory(), homeStation: 
 const input = document.querySelector("#searchInput");
 const form = document.querySelector("#searchForm");
 const historyList = document.querySelector("#historyList");
-const historyCount = document.querySelector("#historyCount");
 const selectedServiceText = document.querySelector("#selectedService");
 const helpDialog = document.querySelector("#helpDialog");
 const stationDialog = document.querySelector("#stationDialog");
@@ -56,7 +55,6 @@ function formatDate(timestamp) {
 }
 
 function renderHistory() {
-  historyCount.textContent = `${state.history.length}件`;
   historyList.replaceChildren();
 
   if (!state.history.length) {
@@ -117,11 +115,7 @@ function selectService(key, shouldFocus = true) {
     button.classList.toggle("is-selected", button.dataset.service === key);
     button.setAttribute("aria-pressed", String(button.dataset.service === key));
   });
-  selectedServiceText.textContent = key === "yahooTransit"
-    ? `${state.homeStation}駅からYahoo!乗換案内で検索します`
-    : key === "currentRoute"
-      ? "現在地から公共交通機関の経路を検索します"
-      : `${services[key].label}で検索します`;
+  selectedServiceText.textContent = "検索ボタンを押すとGoogleで検索します";
   if (shouldFocus) input.focus({ preventScroll: true });
 }
 
@@ -226,12 +220,12 @@ document.querySelector("#serviceStrip").addEventListener("click", (event) => {
 });
 
 document.querySelector("#clearButton").addEventListener("click", () => {
-  if (!state.history.length) return showToast("削除する履歴はありません");
-  if (window.confirm("お気に入りを含む検索履歴をすべて削除しますか？")) {
-    state.history = [];
+  if (!state.history.some((item) => !item.favorite)) return showToast("削除する履歴はありません");
+  if (window.confirm("お気に入りを除く検索履歴をすべて削除しますか？")) {
+    state.history = state.history.filter((item) => item.favorite);
     saveHistory();
     renderHistory();
-    showToast("検索履歴を削除しました");
+    showToast("お気に入り以外の検索履歴を削除しました");
   }
 });
 

@@ -4,7 +4,7 @@ iPhoneなどのスマートフォンで、検索先を選んですばやく検�
 
 ## 主な機能
 
-- Google、Googleマップ、YouTube、楽天レシピ、App Store、Amazonでの検索
+- Google、Googleマップ、YouTube、楽天レシピ、Amazonでの検索
 - 登録した普段使う駅から入力駅までのYahoo!乗換案内検索
 - 現在地から入力駅までのGoogleマップ公共交通機関検索
 - 普段使う駅の登録・変更

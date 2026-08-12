@@ -51,11 +51,9 @@ button { -webkit-touch-callout: none; }
 
 main { padding: 14px 14px calc(314px + env(safe-area-inset-bottom)); }
 .history-card { background: var(--surface); border-radius: 22px; min-height: 300px; overflow: hidden; box-shadow: 0 8px 28px rgba(25, 63, 77, .06); }
-.section-heading { display: flex; justify-content: space-between; align-items: flex-end; padding: 22px 20px 14px; border-bottom: 1px solid var(--line); }
-.eyebrow { margin: 0 0 3px; font-size: .69rem; color: var(--brand-deep); font-weight: 800; letter-spacing: .14em; }
-h1 { font-size: 1.25rem; margin: 0; }
-.history-count { color: var(--muted); font-size: .82rem; }
-.history-list { max-height: calc(100dvh - 365px); min-height: 220px; overflow-y: auto; }
+.section-heading { padding: 10px 14px 8px; border-bottom: 1px solid var(--line); }
+h1 { font-size: .9rem; margin: 0; }
+.history-list { max-height: calc(100dvh - 335px); min-height: 220px; overflow-y: auto; }
 
 .empty-state { min-height: 220px; display: grid; place-content: center; text-align: center; color: var(--muted); padding: 30px; }
 .empty-state strong { color: var(--ink); margin-bottom: 6px; }
@@ -79,7 +77,6 @@ h1 { font-size: 1.25rem; margin: 0; }
 .service-icon.maps { background: linear-gradient(135deg,#67bd6a 0 38%,#f4d04d 38% 58%,#4d8de7 58%); }
 .service-icon.youtube { background: #ff2d20; }
 .service-icon.rakuten { background: #bf0000; }
-.service-icon.appstore { background: linear-gradient(145deg,#56c5f2,#0877ed); }
 .service-icon.amazon { background: #202a35; color: #ffb23e; }
 .service-icon.yahoo-transit { background: #ff0033; font-size: 1rem; }
 .service-icon.current-route { background: linear-gradient(145deg, #46b87c, #187e58); font-size: 1.45rem; }

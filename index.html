@@ -24,7 +24,7 @@
         <div class="header-actions">
           <button class="icon-button" id="helpButton" type="button" aria-label="使い方">?</button>
           <button class="icon-button" id="settingsButton" type="button" aria-label="普段使う駅の設定">⚙</button>
-          <button class="icon-button" id="clearButton" type="button" aria-label="履歴をすべて削除">
+          <button class="icon-button" id="clearButton" type="button" aria-label="お気に入り以外の履歴を削除">
             <span aria-hidden="true">♲</span>
           </button>
         </div>
@@ -33,11 +33,7 @@
       <main>
         <section class="history-card" aria-labelledby="historyTitle">
           <div class="section-heading">
-            <div>
-              <p class="eyebrow">SEARCH LOG</p>
-              <h1 id="historyTitle">検索履歴</h1>
-            </div>
-            <span class="history-count" id="historyCount">0件</span>
+            <h1 id="historyTitle">検索履歴</h1>
           </div>
           <div class="history-list" id="historyList" aria-live="polite"></div>
         </section>
@@ -58,9 +54,6 @@
             </button>
             <button class="service-button" type="button" data-service="rakuten">
               <span class="service-icon rakuten">R</span><span>楽天レシピ</span>
-            </button>
-            <button class="service-button" type="button" data-service="appstore">
-              <span class="service-icon appstore">A</span><span>App Store</span>
             </button>
             <button class="service-button" type="button" data-service="amazon">
               <span class="service-icon amazon">a</span><span>Amazon</span>
@@ -88,7 +81,7 @@
             />
             <button class="submit-button" type="submit" aria-label="検索する">検索</button>
           </form>
-          <p class="selected-service" id="selectedService">Googleで検索します</p>
+          <p class="selected-service" id="selectedService">検索ボタンを押すとGoogleで検索します</p>
         </section>
       </main>
     </div>
@@ -98,10 +91,10 @@
         <h2>使い方</h2>
         <ol>
           <li>検索ワードを入力します。</li>
-          <li>使いたい検索先を選びます。</li>
-          <li>キーボードの「検索」または右側の検索ボタンを押します。</li>
+          <li>使いたいサービスのボタンを押すと、すぐに検索します。</li>
+          <li>キーボードの「検索」または入力欄右側の検索ボタンでは、Google検索を実行します。</li>
         </ol>
-        <p>履歴の星を押すと、お気に入りとして上部に固定できます。履歴の文字を押すと入力欄へ戻せます。</p>
+        <p>「貼り付け」はクリップボードの文字を入力欄へ貼り付けます。履歴の星を押すと、お気に入りとして上部に固定できます。Yahoo!乗換案内の出発駅は、右上の歯車ボタンから変更できます。</p>
         <button class="dialog-close" id="closeHelpButton" type="button">閉じる</button>
       </div>
     </dialog>
