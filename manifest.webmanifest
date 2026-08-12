@@ -1,0 +1,13 @@
+{
+  "name": "サーチパレット",
+  "short_name": "検索",
+  "description": "検索先をすばやく選べる検索ランチャー",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2f5f7",
+  "theme_color": "#43abc4",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

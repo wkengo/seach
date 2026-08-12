@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#43abc4" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="サーチパレット" />
+    <meta name="description" content="検索先をすばやく選べる、履歴とお気に入り付きの検索ランチャー" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>サーチパレット</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="brand" aria-label="サーチパレット">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>サーチパレット</span>
+        </div>
+        <div class="header-actions">
+          <button class="icon-button" id="helpButton" type="button" aria-label="使い方">?</button>
+          <button class="icon-button" id="settingsButton" type="button" aria-label="普段使う駅の設定">⚙</button>
+          <button class="icon-button" id="clearButton" type="button" aria-label="履歴をすべて削除">
+            <span aria-hidden="true">♲</span>
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <section class="history-card" aria-labelledby="historyTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">SEARCH LOG</p>
+              <h1 id="historyTitle">検索履歴</h1>
+            </div>
+            <span class="history-count" id="historyCount">0件</span>
+          </div>
+          <div class="history-list" id="historyList" aria-live="polite"></div>
+        </section>
+
+        <section class="search-panel" aria-label="検索">
+          <div class="service-strip" id="serviceStrip" aria-label="検索先を選択">
+            <button class="service-button paste-button" type="button" data-action="paste">
+              <span class="service-icon">⌕</span><span>貼り付け</span>
+            </button>
+            <button class="service-button is-selected" type="button" data-service="google">
+              <span class="service-icon google">G</span><span>Google</span>
+            </button>
+            <button class="service-button" type="button" data-service="maps">
+              <span class="service-icon maps">●</span><span>Google<br />マップ</span>
+            </button>
+            <button class="service-button" type="button" data-service="youtube">
+              <span class="service-icon youtube">▶</span><span>YouTube</span>
+            </button>
+            <button class="service-button" type="button" data-service="rakuten">
+              <span class="service-icon rakuten">R</span><span>楽天レシピ</span>
+            </button>
+            <button class="service-button" type="button" data-service="appstore">
+              <span class="service-icon appstore">A</span><span>App Store</span>
+            </button>
+            <button class="service-button" type="button" data-service="amazon">
+              <span class="service-icon amazon">a</span><span>Amazon</span>
+            </button>
+            <button class="service-button" type="button" data-service="yahooTransit">
+              <span class="service-icon yahoo-transit">Y!</span><span>Yahoo!<br />乗換</span>
+            </button>
+            <button class="service-button" type="button" data-service="currentRoute">
+              <span class="service-icon current-route">⌖</span><span>現在地<br />経路</span>
+            </button>
+          </div>
+
+          <form class="search-form" id="searchForm">
+            <label class="sr-only" for="searchInput">検索ワードを入力</label>
+            <span class="input-mark" aria-hidden="true"></span>
+            <input
+              id="searchInput"
+              name="query"
+              type="search"
+              placeholder="検索ワードを入力"
+              autocomplete="off"
+              autocapitalize="none"
+              enterkeyhint="search"
+              autofocus
+            />
+            <button class="submit-button" type="submit" aria-label="検索する">検索</button>
+          </form>
+          <p class="selected-service" id="selectedService">Googleで検索します</p>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="helpDialog">
+      <div class="dialog-body">
+        <h2>使い方</h2>
+        <ol>
+          <li>検索ワードを入力します。</li>
+          <li>使いたい検索先を選びます。</li>
+          <li>キーボードの「検索」または右側の検索ボタンを押します。</li>
+        </ol>
+        <p>履歴の星を押すと、お気に入りとして上部に固定できます。履歴の文字を押すと入力欄へ戻せます。</p>
+        <button class="dialog-close" id="closeHelpButton" type="button">閉じる</button>
+      </div>
+    </dialog>
+
+    <dialog id="stationDialog">
+      <form class="dialog-body" id="stationForm" method="dialog">
+        <h2>普段使う駅の設定</h2>
+        <p>Yahoo!乗換案内で出発駅として使用します。駅名を入力してください。</p>
+        <label class="station-label" for="stationInput">出発駅</label>
+        <input id="stationInput" class="station-input" type="text" placeholder="例：浜松" autocomplete="off" required />
+        <div class="dialog-actions">
+          <button class="dialog-cancel" id="cancelStationButton" type="button">キャンセル</button>
+          <button class="dialog-close" type="submit">保存</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
