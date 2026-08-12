@@ -11,7 +11,7 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./icon.svg" />
-    <link rel="stylesheet" href="./styles.css?v=10" />
+    <link rel="stylesheet" href="./styles.css?v=11" />
     <title>サーチパレット</title>
   </head>
   <body>
@@ -79,6 +79,7 @@
               enterkeyhint="search"
               autofocus
             />
+            <button class="input-clear-button" id="inputClearButton" type="button" aria-label="入力文字をすべて削除">×</button>
             <button class="submit-button" type="submit" aria-label="検索する">検索</button>
           </form>
           <p class="selected-service" id="selectedService">検索ボタンを押すとGoogleで検索します</p>
@@ -118,6 +119,6 @@
     </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=10" defer></script>
+    <script src="./app.js?v=11" defer></script>
   </body>
 </html>

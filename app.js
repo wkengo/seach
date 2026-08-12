@@ -28,6 +28,7 @@ const state = {
   serviceOrder: loadServiceOrder(),
 };
 const input = document.querySelector("#searchInput");
+const inputClearButton = document.querySelector("#inputClearButton");
 const form = document.querySelector("#searchForm");
 const historyList = document.querySelector("#historyList");
 const selectedServiceText = document.querySelector("#selectedService");
@@ -108,6 +109,10 @@ function showToast(message) {
   toast.textContent = message;
   toast.classList.add("is-visible");
   toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 1800);
+}
+
+function updateInputClearButton() {
+  inputClearButton.hidden = input.value.length === 0;
 }
 
 function formatDate(timestamp) {
@@ -209,6 +214,7 @@ function executeSearch(rawQuery, service = state.selectedService) {
 
 function useHistory(item) {
   input.value = item.query;
+  updateInputClearButton();
   selectService(item.service);
   input.setSelectionRange(input.value.length, input.value.length);
 }
@@ -240,6 +246,13 @@ function openStationDialog(selectYahooAfterSave = false, pendingQuery = "") {
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   executeSearch(input.value, "google");
+});
+
+input.addEventListener("input", updateInputClearButton);
+inputClearButton.addEventListener("click", () => {
+  input.value = "";
+  updateInputClearButton();
+  input.focus({ preventScroll: true });
 });
 
 serviceStrip.addEventListener("click", (event) => {
@@ -323,3 +336,4 @@ window.addEventListener("load", async () => {
 selectService("google", false);
 applyServiceOrder();
 renderHistory();
+updateInputClearButton();

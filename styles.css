@@ -82,12 +82,14 @@ h1 { font-size: .9rem; margin: 0; }
 .service-icon.yahoo-transit { background: #ff0033; font-size: 1rem; }
 .service-icon.current-route { background: linear-gradient(145deg, #46b87c, #187e58); font-size: 1.45rem; }
 
-.search-form { display: grid; grid-template-columns: 32px 1fr auto; align-items: center; gap: 6px; min-height: 58px; padding: 6px 7px 6px 15px; background: var(--surface); border: 2px solid transparent; border-radius: 18px; box-shadow: 0 6px 22px rgba(36,61,70,.08); }
+.search-form { display: grid; grid-template-columns: 32px 1fr 38px auto; align-items: center; gap: 6px; min-height: 58px; padding: 6px 7px 6px 15px; background: var(--surface); border: 2px solid transparent; border-radius: 18px; box-shadow: 0 6px 22px rgba(36,61,70,.08); }
 .search-form:focus-within { border-color: rgba(67,171,196,.48); }
 .input-mark { width: 16px; height: 16px; border-width: 3px; color: var(--brand); }
 .input-mark::after { width: 6px; height: 3px; right: -6px; }
 #searchInput { width: 100%; border: 0; outline: 0; font-size: 1rem; color: var(--ink); min-height: 42px; background: transparent; }
 #searchInput::placeholder { color: #b3bec2; }
+.input-clear-button { width: 36px; height: 36px; border: 0; border-radius: 50%; background: #e8edef; color: #71828a; font-size: 1.35rem; line-height: 1; font-weight: 500; cursor: pointer; }
+.input-clear-button[hidden] { display: none; }
 .submit-button { border: 0; border-radius: 13px; min-width: 62px; min-height: 44px; background: var(--brand); color: white; font-weight: 800; cursor: pointer; }
 .submit-button:active { background: var(--brand-deep); }
 .selected-service { margin: 7px 4px 0; text-align: center; color: var(--muted); font-size: .72rem; }
