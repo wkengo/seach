@@ -1,5 +1,7 @@
 const STORAGE_KEY = "searchPalette.history.v1";
 const STATION_KEY = "searchPalette.homeStation.v1";
+const ORDER_KEY = "searchPalette.serviceOrder.v1";
+const DEFAULT_SERVICE_ORDER = ["google", "maps", "currentRoute", "yahooTransit", "youtube", "amazon", "tabelog", "rakuten"];
 
 const services = {
   google: { label: "Google", buildUrl: (q) => `./google-search.html?q=${encodeURIComponent(q)}` },
@@ -19,7 +21,12 @@ const services = {
   },
 };
 
-const state = { selectedService: "google", history: loadHistory(), homeStation: localStorage.getItem(STATION_KEY) || "" };
+const state = {
+  selectedService: "google",
+  history: loadHistory(),
+  homeStation: localStorage.getItem(STATION_KEY) || "",
+  serviceOrder: loadServiceOrder(),
+};
 const input = document.querySelector("#searchInput");
 const form = document.querySelector("#searchForm");
 const historyList = document.querySelector("#historyList");
@@ -28,6 +35,8 @@ const helpDialog = document.querySelector("#helpDialog");
 const stationDialog = document.querySelector("#stationDialog");
 const stationForm = document.querySelector("#stationForm");
 const stationInput = document.querySelector("#stationInput");
+const serviceStrip = document.querySelector("#serviceStrip");
+const orderList = document.querySelector("#orderList");
 const toast = document.querySelector("#toast");
 let toastTimer;
 
@@ -42,6 +51,56 @@ function loadHistory() {
 
 function saveHistory() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state.history.slice(0, 100)));
+}
+
+function loadServiceOrder() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
+    if (Array.isArray(saved) && DEFAULT_SERVICE_ORDER.every((key) => saved.includes(key)) && saved.length === DEFAULT_SERVICE_ORDER.length) return saved;
+  } catch {}
+  return [...DEFAULT_SERVICE_ORDER];
+}
+
+function applyServiceOrder() {
+  state.serviceOrder.forEach((key) => {
+    const button = serviceStrip.querySelector(`[data-service="${key}"]`);
+    if (button) serviceStrip.append(button);
+  });
+}
+
+function renderOrderSettings() {
+  orderList.replaceChildren();
+  state.serviceOrder.forEach((key, index) => {
+    const row = document.createElement("div");
+    row.className = "order-item";
+    const label = document.createElement("span");
+    label.textContent = services[key].label;
+    const up = document.createElement("button");
+    up.className = "order-button";
+    up.type = "button";
+    up.textContent = "↑";
+    up.disabled = index === 0;
+    up.setAttribute("aria-label", `${services[key].label}を上へ移動`);
+    up.addEventListener("click", () => moveService(index, -1));
+    const down = document.createElement("button");
+    down.className = "order-button";
+    down.type = "button";
+    down.textContent = "↓";
+    down.disabled = index === state.serviceOrder.length - 1;
+    down.setAttribute("aria-label", `${services[key].label}を下へ移動`);
+    down.addEventListener("click", () => moveService(index, 1));
+    row.append(label, up, down);
+    orderList.append(row);
+  });
+}
+
+function moveService(index, direction) {
+  const nextIndex = index + direction;
+  if (nextIndex < 0 || nextIndex >= state.serviceOrder.length) return;
+  [state.serviceOrder[index], state.serviceOrder[nextIndex]] = [state.serviceOrder[nextIndex], state.serviceOrder[index]];
+  localStorage.setItem(ORDER_KEY, JSON.stringify(state.serviceOrder));
+  applyServiceOrder();
+  renderOrderSettings();
 }
 
 function showToast(message) {
@@ -173,6 +232,7 @@ function openStationDialog(selectYahooAfterSave = false, pendingQuery = "") {
   stationDialog.dataset.selectYahooAfterSave = String(selectYahooAfterSave);
   stationDialog.dataset.pendingQuery = pendingQuery;
   stationInput.value = state.homeStation;
+  renderOrderSettings();
   stationDialog.showModal();
   setTimeout(() => stationInput.focus(), 80);
 }
@@ -182,7 +242,7 @@ form.addEventListener("submit", (event) => {
   executeSearch(input.value, "google");
 });
 
-document.querySelector("#serviceStrip").addEventListener("click", (event) => {
+serviceStrip.addEventListener("click", (event) => {
   const button = event.target.closest("button");
   if (!button) return;
   if (button.dataset.service) {
@@ -214,18 +274,31 @@ document.querySelector("#clearButton").addEventListener("click", () => {
 
 document.querySelector("#helpButton").addEventListener("click", () => helpDialog.showModal());
 document.querySelector("#settingsButton").addEventListener("click", () => openStationDialog(false));
+document.querySelector("#resetOrderButton").addEventListener("click", () => {
+  state.serviceOrder = [...DEFAULT_SERVICE_ORDER];
+  localStorage.setItem(ORDER_KEY, JSON.stringify(state.serviceOrder));
+  applyServiceOrder();
+  renderOrderSettings();
+  showToast("ボタンを初期順に戻しました");
+});
 document.querySelector("#closeHelpButton").addEventListener("click", () => helpDialog.close());
 helpDialog.addEventListener("click", (event) => { if (event.target === helpDialog) helpDialog.close(); });
 document.querySelector("#cancelStationButton").addEventListener("click", () => stationDialog.close());
 stationForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const station = stationInput.value.trim().replace(/駅$/, "");
-  if (!station) return;
-  state.homeStation = station;
-  localStorage.setItem(STATION_KEY, station);
-  stationDialog.close();
-  showToast(`普段使う駅を「${station}駅」に設定しました`);
   const pendingQuery = stationDialog.dataset.pendingQuery || "";
+  if (!station && pendingQuery) {
+    showToast("出発駅を入力してください");
+    stationInput.focus();
+    return;
+  }
+  if (station) {
+    state.homeStation = station;
+    localStorage.setItem(STATION_KEY, station);
+  }
+  stationDialog.close();
+  if (station) showToast(`普段使う駅を「${station}駅」に設定しました`);
   stationDialog.dataset.pendingQuery = "";
   if (pendingQuery) {
     selectService("yahooTransit", false);
@@ -239,4 +312,5 @@ window.addEventListener("pageshow", () => setTimeout(() => input.focus({ prevent
 if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
 
 selectService("google", false);
+applyServiceOrder();
 renderHistory();

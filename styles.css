@@ -102,6 +102,13 @@ dialog::backdrop { background: rgba(20,45,55,.42); backdrop-filter: blur(3px); }
 .station-label { display: block; margin: 18px 0 7px; font-size: .82rem; font-weight: 800; }
 .station-input { width: 100%; min-height: 50px; border: 2px solid var(--line); border-radius: 14px; padding: 0 14px; outline: 0; font-size: 1rem; }
 .station-input:focus { border-color: var(--brand); }
+.order-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 20px 0 8px; font-size: .82rem; font-weight: 800; }
+.order-reset { border: 0; background: transparent; color: var(--brand-deep); padding: 6px; font-size: .76rem; font-weight: 800; }
+.order-list { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; max-height: 250px; overflow-y: auto; }
+.order-item { display: grid; grid-template-columns: 1fr 42px 42px; align-items: center; min-height: 44px; padding-left: 13px; border-bottom: 1px solid var(--line); font-size: .82rem; font-weight: 700; }
+.order-item:last-child { border-bottom: 0; }
+.order-button { height: 38px; border: 0; background: transparent; color: var(--brand-deep); font-size: 1.05rem; font-weight: 900; }
+.order-button:disabled { color: #c9d3d7; }
 .dialog-actions { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; margin-top: 18px; }
 .dialog-actions .dialog-close { width: auto; }
 .dialog-cancel { min-height: 48px; border: 0; border-radius: 14px; background: #edf1f3; color: var(--ink); font-weight: 800; }

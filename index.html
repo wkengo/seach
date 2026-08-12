@@ -40,29 +40,29 @@
 
         <section class="search-panel" aria-label="検索">
           <div class="service-strip" id="serviceStrip" aria-label="検索先を選択">
-            <button class="service-button" type="button" data-service="tabelog">
-              <span class="service-icon tabelog">食</span><span>食べログ</span>
-            </button>
             <button class="service-button is-selected" type="button" data-service="google">
               <span class="service-icon google">G</span><span>Google</span>
             </button>
             <button class="service-button" type="button" data-service="maps">
               <span class="service-icon maps">●</span><span>Google<br />マップ</span>
             </button>
-            <button class="service-button" type="button" data-service="youtube">
-              <span class="service-icon youtube">▶</span><span>YouTube</span>
-            </button>
-            <button class="service-button" type="button" data-service="rakuten">
-              <span class="service-icon rakuten">R</span><span>楽天レシピ</span>
-            </button>
-            <button class="service-button" type="button" data-service="amazon">
-              <span class="service-icon amazon">a</span><span>Amazon</span>
+            <button class="service-button" type="button" data-service="currentRoute">
+              <span class="service-icon current-route">⌖</span><span>現在地<br />経路</span>
             </button>
             <button class="service-button" type="button" data-service="yahooTransit">
               <span class="service-icon yahoo-transit">Y!</span><span>Yahoo!<br />乗換</span>
             </button>
-            <button class="service-button" type="button" data-service="currentRoute">
-              <span class="service-icon current-route">⌖</span><span>現在地<br />経路</span>
+            <button class="service-button" type="button" data-service="youtube">
+              <span class="service-icon youtube">▶</span><span>YouTube</span>
+            </button>
+            <button class="service-button" type="button" data-service="amazon">
+              <span class="service-icon amazon">a</span><span>Amazon</span>
+            </button>
+            <button class="service-button" type="button" data-service="tabelog">
+              <span class="service-icon tabelog">食</span><span>食べログ</span>
+            </button>
+            <button class="service-button" type="button" data-service="rakuten">
+              <span class="service-icon rakuten">R</span><span>楽天レシピ</span>
             </button>
           </div>
 
@@ -94,7 +94,7 @@
           <li>使いたいサービスのボタンを押すと、すぐに検索します。</li>
           <li>キーボードの「検索」または入力欄右側の検索ボタンでは、Google検索を実行します。</li>
         </ol>
-        <p>履歴の星を押すと、お気に入りとして上部に固定できます。Yahoo!乗換案内の出発駅は、右上の歯車ボタンから変更できます。</p>
+        <p>履歴の星を押すと、お気に入りとして上部に固定できます。Yahoo!乗換案内の出発駅と検索ボタンの並び順は、右上の歯車ボタンから変更できます。</p>
         <button class="dialog-close" id="closeHelpButton" type="button">閉じる</button>
       </div>
     </dialog>
@@ -104,7 +104,12 @@
         <h2>普段使う駅の設定</h2>
         <p>Yahoo!乗換案内で出発駅として使用します。駅名を入力してください。</p>
         <label class="station-label" for="stationInput">出発駅</label>
-        <input id="stationInput" class="station-input" type="text" placeholder="例：浜松" autocomplete="off" required />
+        <input id="stationInput" class="station-input" type="text" placeholder="例：浜松" autocomplete="off" />
+        <div class="order-heading">
+          <span>検索ボタンの並び順</span>
+          <button id="resetOrderButton" class="order-reset" type="button">初期順に戻す</button>
+        </div>
+        <div id="orderList" class="order-list" aria-label="検索ボタンの並び順"></div>
         <div class="dialog-actions">
           <button class="dialog-cancel" id="cancelStationButton" type="button">キャンセル</button>
           <button class="dialog-close" type="submit">保存</button>
