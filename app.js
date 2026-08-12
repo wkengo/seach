@@ -309,7 +309,16 @@ stationForm.addEventListener("submit", (event) => {
 });
 
 window.addEventListener("pageshow", () => setTimeout(() => input.focus({ preventScroll: true }), 120));
-if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
+window.addEventListener("load", async () => {
+  if ("serviceWorker" in navigator) {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(registrations.map((registration) => registration.unregister()));
+  }
+  if ("caches" in window) {
+    const cacheNames = await caches.keys();
+    await Promise.all(cacheNames.map((cacheName) => caches.delete(cacheName)));
+  }
+});
 
 selectService("google", false);
 applyServiceOrder();
