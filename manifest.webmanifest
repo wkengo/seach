@@ -1,6 +1,6 @@
 {
-  "name": "サーチパレット",
-  "short_name": "検索",
+  "name": "検索パレット",
+  "short_name": "検索パレット",
   "description": "検索先をすばやく選べる検索ランチャー",
   "start_url": "./",
   "scope": "./",
