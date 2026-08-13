@@ -80,7 +80,7 @@ h1 { font-size: .9rem; margin: 0; }
 .service-icon.youtube { background: #ff2d20; }
 .service-icon.rakuten { background: #bf0000; }
 .service-icon.amazon { background: #202a35; color: #ffb23e; }
-.service-icon.nearby { background: linear-gradient(145deg, #46b87c, #187e58); font-size: 1.3rem; }
+.service-icon.tabelog { background: #ff8a00; }
 .service-icon.yahoo-transit { background: #ff0033; font-size: 1rem; }
 
 .search-form { display: grid; grid-template-columns: 32px 1fr 38px auto; align-items: center; gap: 6px; min-height: 58px; padding: 6px 7px 6px 15px; background: var(--surface); border: 2px solid transparent; border-radius: 18px; box-shadow: 0 6px 22px rgba(36,61,70,.08); }

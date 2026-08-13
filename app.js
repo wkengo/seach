@@ -1,12 +1,17 @@
 const STORAGE_KEY = "searchPalette.history.v1";
 const STATION_KEY = "searchPalette.homeStation.v1";
 const ORDER_KEY = "searchPalette.serviceOrder.v1";
-const DEFAULT_SERVICE_ORDER = ["google", "aiMode", "maps", "yahooTransit", "youtube", "amazon", "nearby", "rakuten"];
+const DEFAULT_SERVICE_ORDER = ["google", "aiMode", "maps", "yahooTransit", "youtube", "amazon", "tabelog", "rakuten"];
 
 const services = {
   google: { label: "Google", buildUrl: (q) => `./google-search.html?q=${encodeURIComponent(q)}` },
   aiMode: { label: "AIモード", buildUrl: (q) => `./ai-search.html?q=${encodeURIComponent(q)}` },
-  nearby: { label: "周辺検索" },
+  tabelog: {
+    label: "食べログ",
+    buildUrl: (q) => /iPhone/i.test(navigator.userAgent)
+      ? `https://maps.apple.com/?q=${encodeURIComponent(q)}`
+      : `https://tabelog.com/rstLst/?sk=${encodeURIComponent(q)}`,
+  },
   maps: { label: "Googleマップ", buildUrl: (q) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` },
   youtube: { label: "YouTube", buildUrl: (q) => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}` },
   rakuten: { label: "楽天レシピ", buildUrl: (q) => `https://recipe.rakuten.co.jp/search/${encodeURIComponent(q)}/` },
@@ -44,7 +49,7 @@ function loadHistory() {
     const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
     return Array.isArray(parsed)
       ? parsed.filter((item) => item && typeof item.query === "string")
-        .map((item) => item.service === "tabelog" ? { ...item, service: "nearby" } : item)
+        .map((item) => item.service === "nearby" ? { ...item, service: "tabelog" } : item)
         .slice(0, 100)
       : [];
   } catch {
@@ -65,8 +70,8 @@ function loadServiceOrder() {
       saved.splice(googleIndex >= 0 ? googleIndex + 1 : 0, 0, "aiMode");
       localStorage.setItem(ORDER_KEY, JSON.stringify(saved));
     }
-    if (Array.isArray(saved) && saved.includes("tabelog")) {
-      saved = saved.map((key) => key === "tabelog" ? "nearby" : key);
+    if (Array.isArray(saved) && saved.includes("nearby")) {
+      saved = saved.map((key) => key === "nearby" ? "tabelog" : key);
       localStorage.setItem(ORDER_KEY, JSON.stringify(saved));
     }
     if (Array.isArray(saved) && DEFAULT_SERVICE_ORDER.every((key) => saved.includes(key)) && saved.length === DEFAULT_SERVICE_ORDER.length) return saved;
@@ -238,43 +243,8 @@ function executeSearch(rawQuery, service = state.selectedService) {
     openStationDialog(true);
     return;
   }
-  if (service === "nearby") {
-    executeNearbySearch(query);
-    return;
-  }
   recordHistory(query, service);
   window.open(services[service].buildUrl(query), "_blank", "noopener,noreferrer");
-}
-
-function executeNearbySearch(query) {
-  if (!("geolocation" in navigator)) {
-    showToast("この端末では現在位置を取得できません");
-    return;
-  }
-  const resultWindow = window.open("about:blank", "_blank");
-  if (!resultWindow) {
-    showToast("別タブの表示を許可してください");
-    return;
-  }
-  resultWindow.opener = null;
-  resultWindow.document.title = "現在位置を取得しています";
-  resultWindow.document.body.textContent = "現在位置を取得しています。";
-  navigator.geolocation.getCurrentPosition(
-    ({ coords }) => {
-      const locationQuery = `${query} near ${coords.latitude},${coords.longitude}`;
-      const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationQuery)}`;
-      recordHistory(query, "nearby");
-      resultWindow.location.replace(url);
-    },
-    (error) => {
-      resultWindow.close();
-      const message = error.code === 1
-        ? "位置情報を許可してください"
-        : "現在位置を取得できませんでした";
-      showToast(message);
-    },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
-  );
 }
 
 function useHistory(item) {

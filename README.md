@@ -4,8 +4,8 @@ iPhoneなどのスマートフォンで、検索先を選んですばやく検�
 
 ## 主な機能
 
-- Google、Google AIモード、Googleマップ、YouTube、楽天レシピ、Amazonでの検索
-- 現在位置周辺を入力キーワードでGoogleマップ検索
+- Google、Google AIモード、Googleマップ、YouTube、楽天レシピ、Amazon、食べログでの検索
+- iPhoneでは食べログボタンからAppleマップで入力キーワードを検索
 - 登録した普段使う駅から入力駅までのYahoo!乗換案内検索
 - 普段使う駅の登録・変更
 - 端末内への検索履歴保存（最大100件）
