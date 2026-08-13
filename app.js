@@ -248,7 +248,7 @@ function executeSearch(rawQuery, service = state.selectedService) {
 }
 
 function useHistory(item) {
-  input.value = item.query;
+  input.value = `${item.query.trimEnd()} `;
   updateInputClearButton();
   selectService(item.service);
   input.setSelectionRange(input.value.length, input.value.length);
