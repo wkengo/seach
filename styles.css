@@ -75,13 +75,13 @@ h1 { font-size: .9rem; margin: 0; }
 .service-button.is-selected { border-color: var(--brand); background: var(--brand-pale); color: var(--brand-deep); }
 .service-icon { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; color: white; background: var(--brand); font-size: 1rem; font-weight: 900; }
 .service-icon.google { background: #fff; color: #4285f4; border: 1px solid #e7eaec; }
+.service-icon.ai-mode { background: linear-gradient(145deg, #4285f4, #9b72cb 55%, #d96570); font-size: .78rem; letter-spacing: -.03em; }
 .service-icon.maps { background: linear-gradient(135deg,#67bd6a 0 38%,#f4d04d 38% 58%,#4d8de7 58%); }
 .service-icon.youtube { background: #ff2d20; }
 .service-icon.rakuten { background: #bf0000; }
 .service-icon.amazon { background: #202a35; color: #ffb23e; }
 .service-icon.tabelog { background: #ff8a00; }
 .service-icon.yahoo-transit { background: #ff0033; font-size: 1rem; }
-.service-icon.current-route { background: linear-gradient(145deg, #46b87c, #187e58); font-size: 1.45rem; }
 
 .search-form { display: grid; grid-template-columns: 32px 1fr 38px auto; align-items: center; gap: 6px; min-height: 58px; padding: 6px 7px 6px 15px; background: var(--surface); border: 2px solid transparent; border-radius: 18px; box-shadow: 0 6px 22px rgba(36,61,70,.08); }
 .search-form:focus-within { border-color: rgba(67,171,196,.48); }

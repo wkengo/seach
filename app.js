@@ -1,10 +1,11 @@
 const STORAGE_KEY = "searchPalette.history.v1";
 const STATION_KEY = "searchPalette.homeStation.v1";
 const ORDER_KEY = "searchPalette.serviceOrder.v1";
-const DEFAULT_SERVICE_ORDER = ["google", "maps", "currentRoute", "yahooTransit", "youtube", "amazon", "tabelog", "rakuten"];
+const DEFAULT_SERVICE_ORDER = ["google", "aiMode", "maps", "yahooTransit", "youtube", "amazon", "tabelog", "rakuten"];
 
 const services = {
   google: { label: "Google", buildUrl: (q) => `./google-search.html?q=${encodeURIComponent(q)}` },
+  aiMode: { label: "AIモード", buildUrl: (q) => `./ai-search.html?q=${encodeURIComponent(q)}` },
   tabelog: { label: "食べログ", buildUrl: (q) => `https://tabelog.com/rstLst/?vs=1&sk=${encodeURIComponent(q)}` },
   maps: { label: "Googleマップ", buildUrl: (q) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` },
   youtube: { label: "YouTube", buildUrl: (q) => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}` },
@@ -14,10 +15,6 @@ const services = {
   yahooTransit: {
     label: "Yahoo!乗換案内",
     buildUrl: (q) => `https://transit.yahoo.co.jp/search/result?from=${encodeURIComponent(state.homeStation)}&to=${encodeURIComponent(q)}&type=1&ticket=ic&al=1&shin=1&ex=1&hb=1&lb=1&sr=1`,
-  },
-  currentRoute: {
-    label: "現在地からの経路",
-    buildUrl: (q) => `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(q)}&travelmode=driving`,
   },
 };
 
@@ -57,7 +54,13 @@ function saveHistory() {
 
 function loadServiceOrder() {
   try {
-    const saved = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
+    let saved = JSON.parse(localStorage.getItem(ORDER_KEY) || "[]");
+    if (Array.isArray(saved) && saved.includes("currentRoute")) {
+      saved = saved.filter((key) => key !== "currentRoute" && key !== "aiMode");
+      const googleIndex = saved.indexOf("google");
+      saved.splice(googleIndex >= 0 ? googleIndex + 1 : 0, 0, "aiMode");
+      localStorage.setItem(ORDER_KEY, JSON.stringify(saved));
+    }
     if (Array.isArray(saved) && DEFAULT_SERVICE_ORDER.every((key) => saved.includes(key)) && saved.length === DEFAULT_SERVICE_ORDER.length) return saved;
   } catch {}
   return [...DEFAULT_SERVICE_ORDER];
