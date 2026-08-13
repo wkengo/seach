@@ -17,7 +17,7 @@ const services = {
   },
   currentRoute: {
     label: "現在地からの経路",
-    buildUrl: (q) => `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(q)}&travelmode=transit`,
+    buildUrl: (q) => `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(q)}&travelmode=driving`,
   },
 };
 
