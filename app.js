@@ -318,7 +318,9 @@ function openStationDialog(selectYahooAfterSave = false, pendingQuery = "") {
   stationDialog.dataset.pendingQuery = pendingQuery;
   stationInput.value = state.homeStation;
   renderOrderSettings();
+  document.activeElement?.blur();
   stationDialog.showModal();
+  stationDialog.focus({ preventScroll: true });
 }
 
 form.addEventListener("submit", (event) => {
