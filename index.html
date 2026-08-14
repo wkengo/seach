@@ -32,21 +32,6 @@
       </header>
 
       <main class="search-workspace">
-        <div class="records-grid">
-          <section class="history-card" aria-labelledby="historyTitle">
-            <div class="section-heading">
-              <h1 id="historyTitle">検索履歴</h1>
-            </div>
-            <div class="history-list" id="historyList" aria-live="polite"></div>
-          </section>
-          <section class="favorites-card" aria-labelledby="favoritesTitle">
-            <div class="section-heading favorites-heading">
-              <h1 id="favoritesTitle">お気に入り</h1>
-            </div>
-            <div class="history-list" id="favoritesList" aria-live="polite"></div>
-          </section>
-        </div>
-
         <section class="search-panel" aria-label="検索">
           <div class="service-strip" id="serviceStrip" aria-label="検索先を選択">
             <button class="service-button" type="button" data-service="google">
@@ -93,6 +78,21 @@
           </form>
           <p class="selected-service" id="selectedService">検索ボタンを押すとGoogleで検索します</p>
         </section>
+
+        <div class="records-grid">
+          <section class="history-card" aria-labelledby="historyTitle">
+            <div class="section-heading">
+              <h1 id="historyTitle">検索履歴</h1>
+            </div>
+            <div class="history-list" id="historyList" aria-live="polite"></div>
+          </section>
+          <section class="favorites-card" aria-labelledby="favoritesTitle">
+            <div class="section-heading favorites-heading">
+              <h1 id="favoritesTitle">お気に入り</h1>
+            </div>
+            <div class="history-list" id="favoritesList" aria-live="polite"></div>
+          </section>
+        </div>
       </main>
       <aside class="clock-workspace" aria-label="時差一覧">
         <iframe class="clock-frame" src="./world-clock.html" title="世界時差時計"></iframe>
