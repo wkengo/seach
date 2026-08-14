@@ -319,7 +319,6 @@ function openStationDialog(selectYahooAfterSave = false, pendingQuery = "") {
   stationInput.value = state.homeStation;
   renderOrderSettings();
   stationDialog.showModal();
-  setTimeout(() => stationInput.focus(), 80);
 }
 
 form.addEventListener("submit", (event) => {
