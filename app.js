@@ -317,10 +317,11 @@ function openStationDialog(selectYahooAfterSave = false, pendingQuery = "") {
   stationDialog.dataset.selectYahooAfterSave = String(selectYahooAfterSave);
   stationDialog.dataset.pendingQuery = pendingQuery;
   stationInput.value = state.homeStation;
+  stationInput.readOnly = true;
   renderOrderSettings();
   document.activeElement?.blur();
   stationDialog.showModal();
-  stationDialog.focus({ preventScroll: true });
+  requestAnimationFrame(() => stationDialog.focus({ preventScroll: true }));
 }
 
 form.addEventListener("submit", (event) => {
@@ -376,6 +377,9 @@ document.querySelector("#resetOrderButton").addEventListener("click", () => {
 });
 document.querySelector("#closeHelpButton").addEventListener("click", () => helpDialog.close());
 helpDialog.addEventListener("click", (event) => { if (event.target === helpDialog) helpDialog.close(); });
+stationInput.addEventListener("pointerdown", () => {
+  stationInput.readOnly = false;
+});
 document.querySelector("#cancelStationButton").addEventListener("click", () => stationDialog.close());
 stationForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -383,6 +387,7 @@ stationForm.addEventListener("submit", (event) => {
   const pendingQuery = stationDialog.dataset.pendingQuery || "";
   if (!station && pendingQuery) {
     showToast("出発駅を入力してください");
+    stationInput.readOnly = false;
     stationInput.focus();
     return;
   }
