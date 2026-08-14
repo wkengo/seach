@@ -58,6 +58,12 @@
             <button class="service-button" type="button" data-service="wikipedia">
               <span class="service-icon wikipedia">W</span><span>Wikipedia</span>
             </button>
+            <button class="service-button" type="button" data-service="amazon">
+              <span class="service-icon amazon">a</span><span>Amazon</span>
+            </button>
+            <button class="service-button" type="button" data-service="kakaku">
+              <span class="service-icon kakaku">価</span><span>価格.com</span>
+            </button>
           </div>
 
           <form class="search-form" id="searchForm">
@@ -108,7 +114,7 @@
           <li>使いたいサービスのボタンを押すと、すぐに検索します。</li>
           <li>キーボードの「検索」または入力欄右側の検索ボタンでは、Google検索を実行します。</li>
         </ol>
-        <p>履歴の星を押すと、お気に入りとして上部に固定できます。Yahoo!乗換案内の出発駅と検索ボタンの並び順は、右上の歯車ボタンから変更できます。</p>
+        <p>履歴の星を押すと、お気に入りとして上部に固定できます。Yahoo!乗換案内の出発駅と検索ボタンの並び順・表示は、右上の歯車ボタンから変更できます。</p>
         <button class="dialog-close" id="closeHelpButton" type="button">閉じる</button>
       </div>
     </dialog>
@@ -120,7 +126,7 @@
         <label class="station-label" for="stationInput">出発駅</label>
         <input id="stationInput" class="station-input" type="text" placeholder="例：浜松" autocomplete="off" />
         <div class="order-heading">
-          <span>検索ボタンの並び順</span>
+          <span>検索ボタンの並び順・表示</span>
           <button id="resetOrderButton" class="order-reset" type="button">初期順に戻す</button>
         </div>
         <div id="orderList" class="order-list" aria-label="検索ボタンの並び順"></div>

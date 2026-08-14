@@ -4,7 +4,8 @@ iPhoneなどのスマートフォンで、検索先を選んですばやく検�
 
 ## 主な機能
 
-- Google、Google AIモード、Googleニュース、Wikipedia、Google翻訳、AIモードによる単語検索、Googleマップ、Yahoo!乗換案内での検索
+- Google、Google AIモード、Googleニュース、Wikipedia、Google翻訳、AIモードによる単語検索、Googleマップ、Yahoo!乗換案内、Amazon、価格.comでの検索
+- 検索ボタンの並べ替えと表示・非表示の切り替え
 - 登録した普段使う駅から入力駅までのYahoo!乗換案内検索
 - 普段使う駅の登録・変更
 - 端末内への検索履歴保存（最大100件）

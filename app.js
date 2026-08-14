@@ -1,7 +1,8 @@
 const STORAGE_KEY = "searchPalette.history.v1";
 const STATION_KEY = "searchPalette.homeStation.v1";
-const ORDER_KEY = "searchPalette.serviceOrder.v3";
-const DEFAULT_SERVICE_ORDER = ["google", "aiMode", "googleNews", "maps", "yahooTransit", "wordAi", "googleTranslate", "wikipedia"];
+const ORDER_KEY = "searchPalette.serviceOrder.v4";
+const ENABLED_KEY = "searchPalette.enabledServices.v1";
+const DEFAULT_SERVICE_ORDER = ["google", "aiMode", "googleNews", "maps", "yahooTransit", "wordAi", "googleTranslate", "wikipedia", "amazon", "kakaku"];
 
 const services = {
   google: { label: "Google", buildUrl: (q) => `./google-search.html?q=${encodeURIComponent(q)}` },
@@ -20,6 +21,8 @@ const services = {
     buildUrl: (q) => `./ai-search.html?q=${encodeURIComponent(`「${q}」の意味、品詞、英訳または和訳、発音、例文、類義語を簡潔に説明して`)}`,
   },
   maps: { label: "Googleマップ", buildUrl: (q) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` },
+  amazon: { label: "Amazon", buildUrl: (q) => `https://www.amazon.co.jp/s?k=${encodeURIComponent(q)}` },
+  kakaku: { label: "価格.com", buildUrl: (q) => `https://search.kakaku.com/${encodeURIComponent(q)}/` },
   yahooTransit: {
     label: "Yahoo!乗換案内",
     buildUrl: (q) => `https://transit.yahoo.co.jp/search/result?from=${encodeURIComponent(state.homeStation)}&to=${encodeURIComponent(q)}&type=1&ticket=ic&al=1&shin=1&ex=1&hb=1&lb=1&sr=1`,
@@ -31,6 +34,7 @@ const state = {
   history: loadHistory(),
   homeStation: localStorage.getItem(STATION_KEY) || "",
   serviceOrder: loadServiceOrder(),
+  enabledServices: loadEnabledServices(),
 };
 const input = document.querySelector("#searchInput");
 const inputClearButton = document.querySelector("#inputClearButton");
@@ -54,7 +58,7 @@ function loadHistory() {
       ? parsed.filter((item) => item && typeof item.query === "string")
         .map((item) => {
           if (item.service === "nearby" || item.service === "tabelog" || item.service === "gnavi") return { ...item, service: "google" };
-          if (item.service === "amazon" || item.service === "kakaku" || item.service === "deepl" || item.service === "weblio") return { ...item, service: "google" };
+          if (item.service === "deepl" || item.service === "weblio") return { ...item, service: "google" };
           if (item.service === "youtube" || item.service === "rakuten" || item.service === "appstore") return { ...item, service: "google" };
           return item;
         })
@@ -80,7 +84,7 @@ function loadServiceOrder() {
     }
     if (Array.isArray(saved)) {
       saved = saved
-        .filter((key) => services[key] && key !== "youtube" && key !== "rakuten" && key !== "appstore" && key !== "amazon" && key !== "kakaku" && key !== "nearby" && key !== "tabelog" && key !== "gnavi" && key !== "deepl" && key !== "weblio");
+        .filter((key) => services[key] && key !== "youtube" && key !== "rakuten" && key !== "appstore" && key !== "nearby" && key !== "tabelog" && key !== "gnavi" && key !== "deepl" && key !== "weblio");
       DEFAULT_SERVICE_ORDER.forEach((key) => {
         if (!saved.includes(key)) {
           saved.push(key);
@@ -95,10 +99,21 @@ function loadServiceOrder() {
   return [...DEFAULT_SERVICE_ORDER];
 }
 
+function loadEnabledServices() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(ENABLED_KEY) || "null");
+    if (Array.isArray(saved)) return DEFAULT_SERVICE_ORDER.filter((key) => saved.includes(key));
+  } catch {}
+  return [...DEFAULT_SERVICE_ORDER];
+}
+
 function applyServiceOrder() {
   state.serviceOrder.forEach((key) => {
     const button = serviceStrip.querySelector(`[data-service="${key}"]`);
-    if (button) serviceStrip.append(button);
+    if (button) {
+      button.hidden = !state.enabledServices.includes(key);
+      serviceStrip.append(button);
+    }
   });
 }
 
@@ -109,6 +124,15 @@ function renderOrderSettings() {
     row.className = "order-item";
     const label = document.createElement("span");
     label.textContent = services[key].label;
+    const visibility = document.createElement("button");
+    visibility.className = "visibility-button";
+    visibility.type = "button";
+    const isVisible = state.enabledServices.includes(key);
+    visibility.textContent = isVisible ? "表示" : "非表示";
+    visibility.classList.toggle("is-off", !isVisible);
+    visibility.setAttribute("aria-pressed", String(isVisible));
+    visibility.setAttribute("aria-label", `${services[key].label}を${isVisible ? "非表示" : "表示"}にする`);
+    visibility.addEventListener("click", () => toggleServiceVisibility(key));
     const up = document.createElement("button");
     up.className = "order-button";
     up.type = "button";
@@ -123,9 +147,20 @@ function renderOrderSettings() {
     down.disabled = index === state.serviceOrder.length - 1;
     down.setAttribute("aria-label", `${services[key].label}を下へ移動`);
     down.addEventListener("click", () => moveService(index, 1));
-    row.append(label, up, down);
+    row.append(label, visibility, up, down);
     orderList.append(row);
   });
+}
+
+function toggleServiceVisibility(key) {
+  if (state.enabledServices.includes(key)) {
+    state.enabledServices = state.enabledServices.filter((service) => service !== key);
+  } else {
+    state.enabledServices.push(key);
+  }
+  localStorage.setItem(ENABLED_KEY, JSON.stringify(state.enabledServices));
+  applyServiceOrder();
+  renderOrderSettings();
 }
 
 function moveService(index, direction) {
