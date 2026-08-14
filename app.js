@@ -1,22 +1,25 @@
 const STORAGE_KEY = "searchPalette.history.v1";
 const STATION_KEY = "searchPalette.homeStation.v1";
-const ORDER_KEY = "searchPalette.serviceOrder.v1";
-const DEFAULT_SERVICE_ORDER = ["google", "aiMode", "maps", "yahooTransit", "youtube", "amazon", "tabelog", "rakuten"];
+const ORDER_KEY = "searchPalette.serviceOrder.v3";
+const DEFAULT_SERVICE_ORDER = ["google", "aiMode", "googleNews", "maps", "yahooTransit", "wordAi", "googleTranslate", "wikipedia"];
 
 const services = {
   google: { label: "Google", buildUrl: (q) => `./google-search.html?q=${encodeURIComponent(q)}` },
   aiMode: { label: "AIモード", buildUrl: (q) => `./ai-search.html?q=${encodeURIComponent(q)}` },
-  tabelog: {
-    label: "食べログ",
-    buildUrl: (q) => /iPhone/i.test(navigator.userAgent)
-      ? `https://maps.apple.com/?q=${encodeURIComponent(q)}`
-      : `https://tabelog.com/rstLst/?sk=${encodeURIComponent(q)}`,
+  googleNews: { label: "Googleニュース", buildUrl: (q) => `https://news.google.com/search?q=${encodeURIComponent(q)}&hl=ja&gl=JP&ceid=JP%3Aja` },
+  wikipedia: { label: "Wikipedia", buildUrl: (q) => `https://ja.wikipedia.org/w/index.php?search=${encodeURIComponent(q)}` },
+  googleTranslate: {
+    label: "Google翻訳",
+    buildUrl: (q) => {
+      const target = /[ぁ-んァ-ヶ一-龠々]/u.test(q) ? "en" : "ja";
+      return `https://translate.google.com/?sl=auto&tl=${target}&text=${encodeURIComponent(q)}&op=translate`;
+    },
+  },
+  wordAi: {
+    label: "単語検索",
+    buildUrl: (q) => `./ai-search.html?q=${encodeURIComponent(`「${q}」の意味、品詞、英訳または和訳、発音、例文、類義語を簡潔に説明して`)}`,
   },
   maps: { label: "Googleマップ", buildUrl: (q) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` },
-  youtube: { label: "YouTube", buildUrl: (q) => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}` },
-  rakuten: { label: "楽天レシピ", buildUrl: (q) => `https://recipe.rakuten.co.jp/search/${encodeURIComponent(q)}/` },
-  appstore: { label: "App Store", buildUrl: (q) => `https://www.google.com/search?q=${encodeURIComponent(`${q} site:apps.apple.com/jp/app`)}` },
-  amazon: { label: "Amazon", buildUrl: (q) => `https://www.amazon.co.jp/s?k=${encodeURIComponent(q)}` },
   yahooTransit: {
     label: "Yahoo!乗換案内",
     buildUrl: (q) => `https://transit.yahoo.co.jp/search/result?from=${encodeURIComponent(state.homeStation)}&to=${encodeURIComponent(q)}&type=1&ticket=ic&al=1&shin=1&ex=1&hb=1&lb=1&sr=1`,
@@ -33,6 +36,7 @@ const input = document.querySelector("#searchInput");
 const inputClearButton = document.querySelector("#inputClearButton");
 const form = document.querySelector("#searchForm");
 const historyList = document.querySelector("#historyList");
+const favoritesList = document.querySelector("#favoritesList");
 const selectedServiceText = document.querySelector("#selectedService");
 const searchPanel = document.querySelector(".search-panel");
 const helpDialog = document.querySelector("#helpDialog");
@@ -49,7 +53,12 @@ function loadHistory() {
     const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
     return Array.isArray(parsed)
       ? parsed.filter((item) => item && typeof item.query === "string")
-        .map((item) => item.service === "nearby" ? { ...item, service: "tabelog" } : item)
+        .map((item) => {
+          if (item.service === "nearby" || item.service === "tabelog" || item.service === "gnavi") return { ...item, service: "google" };
+          if (item.service === "amazon" || item.service === "kakaku" || item.service === "deepl" || item.service === "weblio") return { ...item, service: "google" };
+          if (item.service === "youtube" || item.service === "rakuten" || item.service === "appstore") return { ...item, service: "google" };
+          return item;
+        })
         .slice(0, 100)
       : [];
   } catch {
@@ -70,11 +79,19 @@ function loadServiceOrder() {
       saved.splice(googleIndex >= 0 ? googleIndex + 1 : 0, 0, "aiMode");
       localStorage.setItem(ORDER_KEY, JSON.stringify(saved));
     }
-    if (Array.isArray(saved) && saved.includes("nearby")) {
-      saved = saved.map((key) => key === "nearby" ? "tabelog" : key);
-      localStorage.setItem(ORDER_KEY, JSON.stringify(saved));
+    if (Array.isArray(saved)) {
+      saved = saved
+        .filter((key) => services[key] && key !== "youtube" && key !== "rakuten" && key !== "appstore" && key !== "amazon" && key !== "kakaku" && key !== "nearby" && key !== "tabelog" && key !== "gnavi" && key !== "deepl" && key !== "weblio");
+      DEFAULT_SERVICE_ORDER.forEach((key) => {
+        if (!saved.includes(key)) {
+          saved.push(key);
+        }
+      });
+      if (saved.length === DEFAULT_SERVICE_ORDER.length) {
+        localStorage.setItem(ORDER_KEY, JSON.stringify(saved));
+        return saved;
+      }
     }
-    if (Array.isArray(saved) && DEFAULT_SERVICE_ORDER.every((key) => saved.includes(key)) && saved.length === DEFAULT_SERVICE_ORDER.length) return saved;
   } catch {}
   return [...DEFAULT_SERVICE_ORDER];
 }
@@ -156,17 +173,26 @@ function formatDate(timestamp) {
 
 function renderHistory() {
   historyList.replaceChildren();
+  favoritesList.replaceChildren();
 
-  if (!state.history.length) {
+  const historyItems = state.history.filter((item) => !item.favorite).sort((a, b) => b.updatedAt - a.updatedAt);
+  const favoriteItems = state.history.filter((item) => item.favorite).sort((a, b) => b.updatedAt - a.updatedAt);
+  renderHistoryGroup(historyList, historyItems, false);
+  renderHistoryGroup(favoritesList, favoriteItems, true);
+}
+
+function renderHistoryGroup(container, items, favorites) {
+  if (!items.length) {
     const empty = document.createElement("div");
     empty.className = "empty-state";
-    empty.innerHTML = "<strong>検索履歴はまだありません</strong><p>検索すると、ここからすぐに再利用できます。</p>";
-    historyList.append(empty);
+    empty.innerHTML = favorites
+      ? "<strong>お気に入りはまだありません</strong><p>検索履歴の星を押すと、こちらに移動します。</p>"
+      : "<strong>検索履歴はまだありません</strong><p>検索すると、ここからすぐに再利用できます。</p>";
+    container.append(empty);
     return;
   }
 
-  const sorted = [...state.history].sort((a, b) => Number(b.favorite) - Number(a.favorite) || b.updatedAt - a.updatedAt);
-  sorted.forEach((item) => {
+  items.forEach((item) => {
     const row = document.createElement("article");
     row.className = `history-item${item.favorite ? " is-favorite" : ""}`;
 
@@ -200,7 +226,7 @@ function renderHistory() {
     search.addEventListener("click", () => executeSearch(item.query, item.service));
 
     row.append(remove, query, favorite, search);
-    historyList.append(row);
+    container.append(row);
   });
 }
 
@@ -212,8 +238,8 @@ function selectService(key, shouldFocus = true) {
   }
   state.selectedService = key;
   document.querySelectorAll("[data-service]").forEach((button) => {
-    button.classList.toggle("is-selected", button.dataset.service === key);
-    button.setAttribute("aria-pressed", String(button.dataset.service === key));
+    button.classList.remove("is-selected");
+    button.removeAttribute("aria-pressed");
   });
   selectedServiceText.textContent = "検索ボタンを押すとGoogleで検索します";
   if (shouldFocus) input.focus({ preventScroll: true });
@@ -248,7 +274,9 @@ function executeSearch(rawQuery, service = state.selectedService) {
 }
 
 function useHistory(item) {
-  input.value = `${item.query.trimEnd()} `;
+  const current = input.value;
+  const separator = current && !current.endsWith(" ") ? " " : "";
+  input.value = `${current}${separator}${item.query.trim()} `;
   updateInputClearButton();
   selectService(item.service);
   input.setSelectionRange(input.value.length, input.value.length);

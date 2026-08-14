@@ -11,15 +11,16 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./icon.svg" />
-    <link rel="stylesheet" href="./styles.css?v=12" />
+    <link rel="stylesheet" href="./styles.css" />
     <title>検索パレット</title>
   </head>
   <body>
     <div class="app-shell">
+      <div class="workspace">
       <header class="app-header">
         <div class="brand" aria-label="検索パレット">
           <span class="brand-mark" aria-hidden="true"></span>
-          <span>検索パレット</span>
+          <span><strong>検索パレット</strong><small>検索先を選んで、すばやく検索</small></span>
         </div>
         <div class="header-actions">
           <button class="icon-button" id="helpButton" type="button" aria-label="使い方">?</button>
@@ -30,21 +31,32 @@
         </div>
       </header>
 
-      <main>
-        <section class="history-card" aria-labelledby="historyTitle">
-          <div class="section-heading">
-            <h1 id="historyTitle">検索履歴</h1>
-          </div>
-          <div class="history-list" id="historyList" aria-live="polite"></div>
-        </section>
+      <main class="search-workspace">
+        <div class="records-grid">
+          <section class="history-card" aria-labelledby="historyTitle">
+            <div class="section-heading">
+              <h1 id="historyTitle">検索履歴</h1>
+            </div>
+            <div class="history-list" id="historyList" aria-live="polite"></div>
+          </section>
+          <section class="favorites-card" aria-labelledby="favoritesTitle">
+            <div class="section-heading favorites-heading">
+              <h1 id="favoritesTitle">お気に入り</h1>
+            </div>
+            <div class="history-list" id="favoritesList" aria-live="polite"></div>
+          </section>
+        </div>
 
         <section class="search-panel" aria-label="検索">
           <div class="service-strip" id="serviceStrip" aria-label="検索先を選択">
-            <button class="service-button is-selected" type="button" data-service="google">
+            <button class="service-button" type="button" data-service="google">
               <span class="service-icon google">G</span><span>Google</span>
             </button>
             <button class="service-button" type="button" data-service="aiMode">
               <span class="service-icon ai-mode">AI</span><span>AIモード</span>
+            </button>
+            <button class="service-button" type="button" data-service="googleNews">
+              <span class="service-icon google-news">N</span><span>Google<br />ニュース</span>
             </button>
             <button class="service-button" type="button" data-service="maps">
               <span class="service-icon maps">●</span><span>Google<br />マップ</span>
@@ -52,17 +64,14 @@
             <button class="service-button" type="button" data-service="yahooTransit">
               <span class="service-icon yahoo-transit">Y!</span><span>Yahoo!<br />乗換</span>
             </button>
-            <button class="service-button" type="button" data-service="youtube">
-              <span class="service-icon youtube">▶</span><span>YouTube</span>
+            <button class="service-button" type="button" data-service="wordAi">
+              <span class="service-icon word-ai">単</span><span>単語検索</span>
             </button>
-            <button class="service-button" type="button" data-service="amazon">
-              <span class="service-icon amazon">a</span><span>Amazon</span>
+            <button class="service-button" type="button" data-service="googleTranslate">
+              <span class="service-icon google-translate">翻</span><span>Google<br />翻訳</span>
             </button>
-            <button class="service-button" type="button" data-service="tabelog">
-              <span class="service-icon tabelog">食</span><span>食べログ</span>
-            </button>
-            <button class="service-button" type="button" data-service="rakuten">
-              <span class="service-icon rakuten">R</span><span>楽天レシピ</span>
+            <button class="service-button" type="button" data-service="wikipedia">
+              <span class="service-icon wikipedia">W</span><span>Wikipedia</span>
             </button>
           </div>
 
@@ -85,6 +94,10 @@
           <p class="selected-service" id="selectedService">検索ボタンを押すとGoogleで検索します</p>
         </section>
       </main>
+      <aside class="clock-workspace" aria-label="時差一覧">
+        <iframe class="clock-frame" src="./world-clock.html" title="世界時差時計"></iframe>
+      </aside>
+      </div>
     </div>
 
     <dialog id="helpDialog">
@@ -119,6 +132,6 @@
     </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=19" defer></script>
+    <script src="./app.js" defer></script>
   </body>
 </html>
