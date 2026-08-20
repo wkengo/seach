@@ -2,7 +2,9 @@ const STORAGE_KEY = "searchPalette.history.v1";
 const STATION_KEY = "searchPalette.homeStation.v1";
 const ORDER_KEY = "searchPalette.serviceOrder.v4";
 const ENABLED_KEY = "searchPalette.enabledServices.v1";
-const DEFAULT_SERVICE_ORDER = ["google", "aiMode", "googleNews", "maps", "yahooTransit", "wordAi", "googleTranslate", "wikipedia", "amazon", "kakaku"];
+const DEFAULT_SERVICE_ORDER = ["google", "aiMode", "googleNews", "maps", "yahooTransit", "wordAi", "googleTranslate", "wikipedia", "amazon", "kakaku", "appleAppStore", "appleMaps"];
+const DEFAULT_ENABLED_SERVICES = ["google", "aiMode", "googleNews", "maps", "yahooTransit", "wordAi", "googleTranslate", "wikipedia", "amazon", "kakaku"];
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
 const services = {
   google: { label: "Google", buildUrl: (q) => `./google-search.html?q=${encodeURIComponent(q)}` },
@@ -23,6 +25,13 @@ const services = {
   maps: { label: "Googleマップ", buildUrl: (q) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}` },
   amazon: { label: "Amazon", buildUrl: (q) => `https://www.amazon.co.jp/s?k=${encodeURIComponent(q)}` },
   kakaku: { label: "価格.com", buildUrl: (q) => `https://search.kakaku.com/${encodeURIComponent(q)}/` },
+  appleAppStore: {
+    label: "App Store検索",
+    buildUrl: (q) => IS_IOS
+      ? `itms-apps://apps.apple.com/search?term=${encodeURIComponent(q)}`
+      : `https://apps.apple.com/jp/iphone/search?term=${encodeURIComponent(q)}`,
+  },
+  appleMaps: { label: "iPhoneマップ", buildUrl: (q) => `https://maps.apple.com/?q=${encodeURIComponent(q)}` },
   yahooTransit: {
     label: "Yahoo!乗換案内",
     buildUrl: (q) => `https://transit.yahoo.co.jp/search/result?from=${encodeURIComponent(state.homeStation)}&to=${encodeURIComponent(q)}&type=1&ticket=ic&al=1&shin=1&ex=1&hb=1&lb=1&sr=1`,
@@ -104,7 +113,7 @@ function loadEnabledServices() {
     const saved = JSON.parse(localStorage.getItem(ENABLED_KEY) || "null");
     if (Array.isArray(saved)) return DEFAULT_SERVICE_ORDER.filter((key) => saved.includes(key));
   } catch {}
-  return [...DEFAULT_SERVICE_ORDER];
+  return [...DEFAULT_ENABLED_SERVICES];
 }
 
 function applyServiceOrder() {

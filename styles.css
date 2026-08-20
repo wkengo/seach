@@ -102,6 +102,8 @@ h1 { font-size: .9rem; margin: 0; }
 .service-icon.yahoo-transit { background: #ff0033; font-size: 1rem; }
 .service-icon.amazon { background: #202a35; color: #ffb23e; }
 .service-icon.kakaku { background: #0068b7; }
+.service-icon.apple-app-store { background: linear-gradient(145deg, #14b6f1, #0879e8); }
+.service-icon.apple-maps { background: linear-gradient(145deg, #62bc6a, #2c8f50); }
 
 .search-form { display: grid; grid-template-columns: 32px minmax(0, 1fr) 38px auto; align-items: center; gap: 6px; min-width: 0; min-height: 58px; padding: 6px 7px 6px 15px; background: var(--surface); border: 2px solid transparent; border-radius: 18px; box-shadow: 0 6px 22px rgba(36,61,70,.08); }
 .search-form:focus-within { border-color: rgba(67,171,196,.48); }
